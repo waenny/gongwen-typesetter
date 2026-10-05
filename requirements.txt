@@ -1,0 +1,12 @@
+# 公文一键排版助手（重建版）运行时依赖
+# 目标：Windows 7 64 位 → 必须使用 Python 3.8.x（最后支持 Win7 的版本），64 位。
+# 安装（构建机）：py -3.8 -m pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+python-docx==0.8.11
+lxml==4.9.4
+Pillow==9.5.0
+pywin32==306 ; sys_platform == "win32"
+tkinterdnd2==0.6.3
+
+# 打包工具（只在构建机安装，不随程序分发）：
+#   pip install "pyinstaller==6.3.0"   # 支持 py3.8，产物可在 Win7 运行（需目标机有 VC/UCRT）
+# 分发时随包附带：VC++ 2015-2019 运行库（补 UCRT），或用 staticucrt 方式打包。

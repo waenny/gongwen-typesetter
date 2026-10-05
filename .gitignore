@@ -1,0 +1,45 @@
+# ---------------- 构建产物 ----------------
+build/
+dist/
+*.pkg
+*.toc
+
+# ---------------- Python 缓存 ----------------
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# ---------------- 旧版 exe 备份（体积大） ----------------
+_old_exe/
+
+# ---------------- 测试与调试产物 ----------------
+_cases/
+_test_img.png
+gui_run.txt
+gui_trace.txt
+build.txt
+build_run.log
+loop_out.txt
+pi_out.txt
+pi_err.txt
+t.log
+t_out
+*.tmp
+
+# ---------------- 内网接入相关（私有，不入库） ----------------
+_intranet_private/
+config.ini
+config.ini.example
+
+# ---------------- 商业字体：不可再分发 ----------------
+# 需要公文字体时请自行安装，或把 ttf 放到 fonts/ 本地目录（此目录不入库）。
+# 仓库里只保留 fonts/README.txt 作为占位说明。
+fonts/*.ttf
+fonts/*.TTF
+fonts/*.ttc
+fonts/*.otf
+
+# ---------------- 系统垃圾 ----------------
+Thumbs.db
+desktop.ini
+.DS_Store
