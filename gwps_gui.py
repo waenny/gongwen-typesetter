@@ -312,11 +312,13 @@ class App:
         ttk.Button(fr, text="清空列表", command=self.clear_files).pack(side="left")
         self.file_list = tk.Listbox(tf, height=7, exportselection=False, font=(FONT, 9),
                                     selectmode=tk.EXTENDED, activestyle="none",
+                                    background="#FFFFFF", foreground=TEXT,
                                     selectbackground=ACCENT, selectforeground="#FFFFFF")
         self.file_list.pack(fill="both", expand=True, padx=4, pady=2)
         ttk.Label(tf, text="可直接把 .docx/.doc/.wps/.txt/.md 文件（或装着这些文件的文件夹）拖到窗口任意位置",
                   style="Hint.TLabel").pack(fill="x", padx=6, pady=(0, 4))
-        self.text_in = tk.Text(tt, wrap="word", font=(FONT, 10))
+        self.text_in = tk.Text(tt, wrap="word", font=(FONT, 10),
+                               background="#FFFFFF", foreground=TEXT, insertbackground=ACCENT_DARK)
         self.text_in.pack(fill="both", expand=True, padx=4, pady=4)
         self.nb, self.tab_import, self.tab_paste = nb, tf, tt
         self._enable_dnd(self.file_list, nb, tf, tt, left, self.root)
@@ -328,7 +330,10 @@ class App:
 
         logf = ttk.LabelFrame(left, text="处理日志 / 自检报告")
         logf.pack(fill="both", expand=False, pady=4)
-        self.console = scrolledtext.ScrolledText(logf, height=10, font=(FONT, 9), state="disabled", wrap="word")
+        # 输入区背景写死为白：不跟随系统“窗口颜色”（否则用户把系统窗口色设成护眼绿等，
+        # 这几个 tk 控件会与本程序自绘的米白+深红主题撞色）
+        self.console = scrolledtext.ScrolledText(logf, height=10, font=(FONT, 9), state="disabled",
+                                                 wrap="word", background="#FFFFFF", foreground=TEXT)
         self.console.pack(fill="both", expand=True, padx=4, pady=4)
         self._enable_dnd(self.console)
 
