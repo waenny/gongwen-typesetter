@@ -253,22 +253,54 @@ class App:
         self.root.config(menu=mbar)
 
     # ---------- 横幅徽标 ----------
+    # 注意：PIL 的 ImageFont.load_default() 是位图字体，**只能画 ASCII**，
+    # 拿它画中文会抛 'latin-1' codec can't encode character（Win7 精简版没有微软雅黑时必崩）。
+    # 所以：找不到能画中文的字体 → 只画方块不画字；且整个过程失败也不能影响启动。
+    _SEAL_FONTS = (
+        r"C:\Windows\Fonts\msyh.ttc",      # 微软雅黑
+        r"C:\Windows\Fonts\msyhl.ttc",     # 微软雅黑 Light
+        r"C:\Windows\Fonts\simhei.ttf",    # 黑体
+        r"C:\Windows\Fonts\simsun.ttc",    # 宋体
+        r"C:\Windows\Fonts\simkai.ttf",    # 楷体
+        r"C:\Windows\Fonts\simfang.ttf",   # 仿宋
+    )
+
+    @staticmethod
+    def _seal_font(ImageFont, px):
+        """挑一个能画中文的真字体；挑不到返回 None（调用方就不画字）。"""
+        for path in App._SEAL_FONTS:
+            try:
+                f = ImageFont.truetype(path, px)
+            except Exception:
+                continue
+            # 位图/回退字体没有 getmask2，画中文会炸，先探测一下
+            if hasattr(f, "getmask2"):
+                return f
+        return None
+
     def _make_seal(self, size=40):
         try:
             from PIL import Image, ImageDraw, ImageFont, ImageTk
         except Exception:
             return None
-        img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
-        d = ImageDraw.Draw(img)
-        d.rounded_rectangle([0, 0, size - 1, size - 1], radius=8, fill=ACCENT_DARK, outline=GOLD, width=2)
         try:
-            fnt = ImageFont.truetype(r"C:\Windows\Fonts\msyh.ttc", int(size * 0.62))
+            img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+            d = ImageDraw.Draw(img)
+            d.rounded_rectangle([0, 0, size - 1, size - 1], radius=8,
+                                fill=ACCENT_DARK, outline=GOLD, width=2)
+            fnt = self._seal_font(ImageFont, int(size * 0.62))
+            if fnt is not None:
+                d.text((size // 2, size // 2), "\u516c", font=fnt, fill="#FFE9A8", anchor="mm")
+            photo = ImageTk.PhotoImage(img.resize((size, size), Image.LANCZOS))
+            self._seal_photo = photo
+            return photo
         except Exception:
-            fnt = ImageFont.load_default()
-        d.text((size // 2, size // 2), "公", font=fnt, fill="#FFE9A8", anchor="mm")
-        photo = ImageTk.PhotoImage(img.resize((size, size), Image.LANCZOS))
-        self._seal_photo = photo
-        return photo
+            # 徽标只是装饰，画不出来也不能让程序起不来
+            try:
+                self._seal_photo = None
+            except Exception:
+                pass
+            return None
 
     def _build(self):
         r = self.root
